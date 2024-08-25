@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/otp_edit_text"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:cursorVisible="false"
+        android:inputType="number|textNoSuggestions"
+        android:maxLength="1"
+        android:padding="8dp"
+        android:background="@drawable/bg_rectangle"
+        android:importantForAccessibility="no"
+        android:focusable="true"
+        android:focusableInTouchMode="true" />
+
+</LinearLayout>
