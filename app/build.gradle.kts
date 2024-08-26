@@ -50,5 +50,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.play.services.auth.api.phone)
     implementation(libs.play.services.auth)
-
 }
