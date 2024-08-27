@@ -49,7 +49,7 @@ class SmsRetrieverBroadcastReceiver(
                         }
                     }
 
-                    CommonStatusCodes.TIMEOUT -> resultChannel.trySend(OTPResult.OTPNotReceived(""))
+                    CommonStatusCodes.TIMEOUT -> resultChannel.trySend(OTPResult.OTPNotReceived("Error Timeout"))
                 }
             } else {
                 resultChannel.trySend(OTPResult.OTPNotReceived("An error has occurred when reading the message"))
