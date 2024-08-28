@@ -11,9 +11,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.receiveAsFlow
 
-class SmsRetrieverBroadcastReceiver(
-    private val onOtpReceived: (String) -> Unit
-) : BroadcastReceiver() {
+class SmsRetrieverBroadcastReceiver : BroadcastReceiver() {
 
     private val resultChannel = Channel<OTPResult>()
     val otpResult = resultChannel.receiveAsFlow().distinctUntilChanged()
@@ -42,7 +40,6 @@ class SmsRetrieverBroadcastReceiver(
                             val otp = otpPattern.find(message.toString())?.value
                             if (!otp.isNullOrEmpty()) {
                                 resultChannel.trySend(OTPResult.OTPReceived(otp))
-                                onOtpReceived.invoke(otp)
                             } else {
                                 resultChannel.trySend(OTPResult.OTPNotReceived("An error has occurred when extracting OTP from message"))
                             }
