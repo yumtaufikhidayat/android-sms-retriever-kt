@@ -1,7 +1,9 @@
 package com.taufikhidayat.smsretrieval
 
+import android.annotation.SuppressLint
 import android.content.IntentFilter
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -26,14 +28,11 @@ class MainActivity : AppCompatActivity() {
     private var otpAdapter: OtpAdapter? = null
     private var countDownTimer: CountDownTimer? = null
 
-    private var otp = ""
     private val timeInMillis: Long = 1 * 60 * 1000 // 5 minutes
     private var millisLeft: Long = 0L
     private val countDownInterval = 1000L
 
-    private val smsRetrieverBroadcastReceiver = SmsRetrieverBroadcastReceiver { otp ->
-        otpAdapter?.setOtp(otp)
-    }
+    private val smsRetrieverBroadcastReceiver = SmsRetrieverBroadcastReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -126,11 +125,8 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             smsRetrieverBroadcastReceiver.otpResult.collect { result ->
                 when (result) {
-                    is SmsRetrieverBroadcastReceiver.OTPResult.OTPReceived -> otp = result.otp
-                    is SmsRetrieverBroadcastReceiver.OTPResult.OTPNotReceived -> Log.e(
-                        TAG,
-                        "collectOtpResult: ${result.error}"
-                    )
+                    is SmsRetrieverBroadcastReceiver.OTPResult.OTPReceived -> otpAdapter?.setOtp(result.otp)
+                    is SmsRetrieverBroadcastReceiver.OTPResult.OTPNotReceived -> Log.e(TAG, "collectOtpResult: ${result.error}")
                 }
             }
         }
@@ -153,10 +149,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onStart() {
         super.onStart()
         val intentFilter = IntentFilter(SmsRetriever.SMS_RETRIEVED_ACTION)
-        registerReceiver(smsRetrieverBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(smsRetrieverBroadcastReceiver, intentFilter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(smsRetrieverBroadcastReceiver, intentFilter)
+        }
     }
 
     override fun onStop() {
